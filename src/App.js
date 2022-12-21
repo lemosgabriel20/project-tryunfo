@@ -8,21 +8,57 @@ class App extends React.Component {
     this.state = {
       name: '',
       description: '',
-      attr1: undefined,
-      attr2: undefined,
-      attr3: undefined,
+      attr1: 0,
+      attr2: 0,
+      attr3: 0,
       image: '',
-      rare: '',
+      rare: 'normal',
       trunfo: false,
       hasTrunfo: false,
       isSaveButtonDisabled: true,
+      savedCards: [],
     };
     this.onInputChange = this.onInputChange.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
   }
 
-  onSaveButtonClick() {
-    return 0;
+  onSaveButtonClick(evt) {
+    evt.preventDefault();
+    const {
+      name,
+      description,
+      image,
+      rare,
+      attr1,
+      attr2,
+      attr3,
+      trunfo,
+      hasTrunfo,
+      savedCards,
+    } = this.state;
+    const newCard = {
+      name,
+      description,
+      image,
+      rare,
+      attr1,
+      attr2,
+      attr3,
+      trunfo,
+      hasTrunfo,
+    };
+    this.setState(({
+      savedCards: [...savedCards, newCard],
+      name: '',
+      description: '',
+      attr1: 0,
+      attr2: 0,
+      attr3: 0,
+      image: '',
+      rare: 'normal',
+      trunfo: false,
+      hasTrunfo: false,
+    }));
   }
 
   onInputChange(evt) {

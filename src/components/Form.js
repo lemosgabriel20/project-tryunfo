@@ -120,12 +120,12 @@ class Form extends React.Component {
 
           <label htmlFor="save">
             <input
-              type="button"
+              type="submit"
               data-testid="save-button"
               id="save"
               value="Salvar"
               disabled={ isSaveButtonDisabled }
-              onChange={ onSaveButtonClick }
+              onClick={ onSaveButtonClick }
             />
           </label>
         </form>
