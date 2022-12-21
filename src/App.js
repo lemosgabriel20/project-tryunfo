@@ -47,6 +47,9 @@ class App extends React.Component {
       trunfo,
       hasTrunfo,
     };
+    if (trunfo === true) {
+      this.setState({ hasTrunfo: true });
+    }
     this.setState(({
       savedCards: [...savedCards, newCard],
       name: '',
@@ -57,7 +60,6 @@ class App extends React.Component {
       image: '',
       rare: 'normal',
       trunfo: false,
-      hasTrunfo: false,
     }));
   }
 
@@ -72,7 +74,9 @@ class App extends React.Component {
     }
     if (evt.target.id === 'trunfo') {
       if (val === 'false') val = true;
-      if (val === 'true') val = false;
+      if (val === 'true') {
+        val = false;
+      }
     }
     this.setState({
       [evt.target.id]: val,

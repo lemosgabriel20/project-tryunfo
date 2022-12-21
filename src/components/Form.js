@@ -107,14 +107,14 @@ class Form extends React.Component {
           </label>
 
           <label htmlFor="trunfo">
-            <input
+            { hasTrunfo ? <p>Você já tem um Super Trunfo em seu baralho</p> : <input
               data-testid="trunfo-input"
               type="checkbox"
               id="trunfo"
               name="trunfo"
               value={ cardTrunfo }
               onChange={ onInputChange }
-            />
+            /> }
             Super Trybe Trunfo
           </label>
 
