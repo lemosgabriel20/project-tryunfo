@@ -112,6 +112,7 @@ class Form extends React.Component {
               type="checkbox"
               id="trunfo"
               name="trunfo"
+              checked
               value={ cardTrunfo }
               onChange={ onInputChange }
             /> }
