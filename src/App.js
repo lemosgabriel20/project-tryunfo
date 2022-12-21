@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Form from './components/Form';
 import Card from './components/Card';
 
@@ -9,13 +8,13 @@ class App extends React.Component {
     this.state = {
       name: '',
       description: '',
-      attr1: '',
-      attr2: '',
-      attr3: '',
+      attr1: undefined,
+      attr2: undefined,
+      attr3: undefined,
       image: '',
       rare: '',
       trunfo: false,
-      hasTrunfo: null,
+      hasTrunfo: false,
       isSaveButtonDisabled: true,
     };
     this.onInputChange = this.onInputChange.bind(this);
@@ -27,15 +26,58 @@ class App extends React.Component {
   }
 
   onInputChange(evt) {
-    console.log(evt.target.value);
     let val = evt.target.value;
+    if (
+      evt.target.id === 'attr1'
+      || evt.target.id === 'attr2'
+      || evt.target.id === 'attr3'
+    ) {
+      val = Number(val);
+    }
     if (evt.target.id === 'trunfo') {
       if (val === 'false') val = true;
       if (val === 'true') val = false;
     }
     this.setState({
       [evt.target.id]: val,
-    });
+    }, this.checkVals);
+  }
+
+  checkAttr(attr1, attr2, attr3) {
+    const limit = 90;
+    const endLimit = 210;
+    if (
+      (attr1 >= 0 && attr1 <= limit)
+      && (attr2 >= 0 && attr2 <= limit)
+      && (attr3 >= 0 && attr3 <= limit)
+      && ((attr1 + attr2 + attr3) <= endLimit)
+    ) {
+      this.setState({ isSaveButtonDisabled: false });
+    } else {
+      this.setState({ isSaveButtonDisabled: true });
+    }
+  }
+
+  checkVals() {
+    const {
+      name,
+      description,
+      image,
+      rare,
+      attr1,
+      attr2,
+      attr3,
+    } = this.state;
+    if (
+      name !== ''
+      && description !== ''
+      && image !== ''
+      && rare !== ''
+    ) {
+      this.checkAttr(attr1, attr2, attr3);
+    } else {
+      this.setState({ isSaveButtonDisabled: true });
+    }
   }
 
   render() {
@@ -83,20 +125,5 @@ class App extends React.Component {
     );
   }
 }
-
-App.propTypes = {
-  name: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  attr1: PropTypes.string.isRequired,
-  attr2: PropTypes.string.isRequired,
-  attr3: PropTypes.string.isRequired,
-  imag: PropTypes.string.isRequired,
-  rare: PropTypes.string.isRequired,
-  trunfo: PropTypes.bool.isRequired,
-  hasTrunfo: PropTypes.bool.isRequired,
-  isSaveButtonDisabled: PropTypes.bool.isRequired,
-  //onInputChange: PropTypes.func.isRequired,
-  //onSaveButtonClick: PropTypes.func.isRequired,
-};
 
 export default App;
