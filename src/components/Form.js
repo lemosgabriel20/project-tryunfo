@@ -111,6 +111,8 @@ class Form extends React.Component {
               type="checkbox"
               id="trunfo"
               name="trunfo"
+              value={ cardTrunfo }
+              onChange={ onInputChange }
             />
             Super Trybe Trunfo
           </label>
