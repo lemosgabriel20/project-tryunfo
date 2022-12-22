@@ -17,10 +17,15 @@ class App extends React.Component {
       hasTrunfo: false,
       isSaveButtonDisabled: true,
       savedCards: [],
+      filteredCards: [],
+      op: false,
     };
     this.onInputChange = this.onInputChange.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
     this.removeCard = this.removeCard.bind(this);
+    this.displayFilteredCards = this.displayFilteredCards.bind(this);
+    this.displaySavedCards = this.displaySavedCards.bind(this);
+    this.filterCards = this.filterCards.bind(this);
   }
 
   onSaveButtonClick(evt) {
@@ -64,6 +69,7 @@ class App extends React.Component {
       rare: 'normal',
       trunfo: false,
       isSaveButtonDisabled: true,
+      op: true,
     }));
   }
 
@@ -99,6 +105,18 @@ class App extends React.Component {
     this.setState({
       savedCards: savedCards.filter((_, i) => i !== index),
     });
+  }
+
+  filterCards(evt) {
+    if (evt.target.value !== '') {
+      this.setState({ op: false });
+      const { savedCards } = this.state;
+      this.setState({
+        filteredCards: savedCards.filter((card) => card.name.includes(evt.target.value)),
+      });
+    } else {
+      this.setState({ op: true });
+    }
   }
 
   checkAttr(attr1, attr2, attr3) {
@@ -158,6 +176,25 @@ class App extends React.Component {
     return renderCards;
   }
 
+  displayFilteredCards(renderCards, filterCards) {
+    filterCards.forEach((card, index) => {
+      renderCards.push(<Card
+        key={ index }
+        value={ index }
+        cardName={ card.name }
+        cardDescription={ card.description }
+        cardAttr1={ card.attr1 }
+        cardAttr2={ card.attr2 }
+        cardAttr3={ card.attr3 }
+        cardImage={ card.image }
+        cardRare={ card.rare }
+        cardTrunfo={ card.trunfo }
+        isCardSaved={ 1 }
+      />);
+    })
+    return renderCards;
+  }
+
   render() {
     const {
       name,
@@ -171,9 +208,9 @@ class App extends React.Component {
       hasTrunfo,
       isSaveButtonDisabled,
       savedCards,
+      op,
+      filteredCards,
     } = this.state;
-    const renderCards = [];
-
     return (
       <div>
         <h1>Tryunfo</h1>
@@ -204,7 +241,15 @@ class App extends React.Component {
           isCardSaved={ 0 }
           removeCard={ null }
         />
-        { this.displaySavedCards(renderCards, savedCards, this.removeCard) }
+        <input
+          data-testid="name-filter"
+          type="text"
+          name="inputFilter"
+          id="inputFilter"
+          onChange={ this.filterCards }
+        />
+        { op ? this.displaySavedCards([], savedCards, this.removeCard)
+          : this.displayFilteredCards([], filteredCards)}
       </div>
     );
   }
