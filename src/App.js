@@ -17,7 +17,6 @@ class App extends React.Component {
       hasTrunfo: false,
       isSaveButtonDisabled: true,
       savedCards: [],
-      showSavedCards: false,
     };
     this.onInputChange = this.onInputChange.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
@@ -62,7 +61,6 @@ class App extends React.Component {
       rare: 'normal',
       trunfo: false,
       isSaveButtonDisabled: true,
-      showSavedCards: true,
     }));
   }
 
@@ -84,7 +82,6 @@ class App extends React.Component {
       }
     }
     this.setState({
-      showSavedCards: false,
       [evt.target.id]: val,
     }, this.checkVals);
   }
@@ -158,7 +155,7 @@ class App extends React.Component {
       savedCards,
     } = this.state;
     const renderCards = [];
-    
+
     return (
       <div>
         <h1>Tryunfo</h1>
