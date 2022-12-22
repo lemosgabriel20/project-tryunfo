@@ -13,10 +13,11 @@ class App extends React.Component {
       attr3: 0,
       image: '',
       rare: 'normal',
-      trunfo: false,
+      trunfo: true,
       hasTrunfo: false,
       isSaveButtonDisabled: true,
       savedCards: [],
+      showSavedCards: false,
     };
     this.onInputChange = this.onInputChange.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
@@ -60,6 +61,8 @@ class App extends React.Component {
       image: '',
       rare: 'normal',
       trunfo: false,
+      isSaveButtonDisabled: true,
+      showSavedCards: true,
     }));
   }
 
@@ -73,12 +76,15 @@ class App extends React.Component {
       val = Number(val);
     }
     if (evt.target.id === 'trunfo') {
-      if (val === 'false') val = true;
+      if (val === 'false') {
+        val = true;
+      }
       if (val === 'true') {
         val = false;
       }
     }
     this.setState({
+      showSavedCards: false,
       [evt.target.id]: val,
     }, this.checkVals);
   }
@@ -120,6 +126,23 @@ class App extends React.Component {
     }
   }
 
+  displaySavedCards(renderCards, savedCards) {
+    savedCards.forEach((card, index) => {
+      renderCards.push(<Card
+        key={ index }
+        cardName={ card.name }
+        cardDescription={ card.description }
+        cardAttr1={ card.attr1 }
+        cardAttr2={ card.attr2 }
+        cardAttr3={ card.attr3 }
+        cardImage={ card.image }
+        cardRare={ card.rare }
+        cardTrunfo={ card.trunfo }
+      />);
+    });
+    return renderCards;
+  }
+
   render() {
     const {
       name,
@@ -132,8 +155,10 @@ class App extends React.Component {
       trunfo,
       hasTrunfo,
       isSaveButtonDisabled,
+      savedCards,
     } = this.state;
-
+    const renderCards = [];
+    
     return (
       <div>
         <h1>Tryunfo</h1>
@@ -161,6 +186,7 @@ class App extends React.Component {
           cardRare={ rare }
           cardTrunfo={ trunfo }
         />
+        { this.displaySavedCards(renderCards, savedCards) }
       </div>
     );
   }
