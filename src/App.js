@@ -20,6 +20,7 @@ class App extends React.Component {
     };
     this.onInputChange = this.onInputChange.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
+    this.removeCard = this.removeCard.bind(this);
   }
 
   onSaveButtonClick(evt) {
@@ -35,6 +36,7 @@ class App extends React.Component {
       trunfo,
       hasTrunfo,
       savedCards,
+      cardSaved,
     } = this.state;
     const newCard = {
       name,
@@ -46,6 +48,7 @@ class App extends React.Component {
       attr3,
       trunfo,
       hasTrunfo,
+      cardSaved,
     };
     if (trunfo === true) {
       this.setState({ hasTrunfo: true });
@@ -86,6 +89,18 @@ class App extends React.Component {
     }, this.checkVals);
   }
 
+  removeCard(evt) {
+    evt.preventDefault();
+    const { savedCards } = this.state;
+    const index = savedCards.indexOf(savedCards[evt.target.name]);
+    if (savedCards[index].trunfo === true) {
+      this.setState({ hasTrunfo: false });
+    }
+    this.setState({
+      savedCards: savedCards.filter((_, i) => i !== index),
+    });
+  }
+
   checkAttr(attr1, attr2, attr3) {
     const limit = 90;
     const endLimit = 210;
@@ -123,10 +138,11 @@ class App extends React.Component {
     }
   }
 
-  displaySavedCards(renderCards, savedCards) {
+  displaySavedCards(renderCards, savedCards, removeCard) {
     savedCards.forEach((card, index) => {
       renderCards.push(<Card
         key={ index }
+        value={ index }
         cardName={ card.name }
         cardDescription={ card.description }
         cardAttr1={ card.attr1 }
@@ -135,6 +151,8 @@ class App extends React.Component {
         cardImage={ card.image }
         cardRare={ card.rare }
         cardTrunfo={ card.trunfo }
+        isCardSaved={ 1 }
+        removeCard={ removeCard }
       />);
     });
     return renderCards;
@@ -174,6 +192,7 @@ class App extends React.Component {
           onSaveButtonClick={ this.onSaveButtonClick }
         />
         <Card
+          value={ -200 }
           cardName={ name }
           cardDescription={ description }
           cardAttr1={ attr1 }
@@ -182,8 +201,10 @@ class App extends React.Component {
           cardImage={ image }
           cardRare={ rare }
           cardTrunfo={ trunfo }
+          isCardSaved={ 0 }
+          removeCard={ null }
         />
-        { this.displaySavedCards(renderCards, savedCards) }
+        { this.displaySavedCards(renderCards, savedCards, this.removeCard) }
       </div>
     );
   }
