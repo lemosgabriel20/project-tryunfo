@@ -13,7 +13,7 @@ class App extends React.Component {
       attr3: 0,
       image: '',
       rare: 'normal',
-      trunfo: true,
+      trunfo: false,
       hasTrunfo: false,
       isSaveButtonDisabled: true,
       savedCards: [],
