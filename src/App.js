@@ -6,253 +6,247 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      description: '',
-      attr1: 0,
-      attr2: 0,
-      attr3: 0,
-      image: '',
-      rare: 'normal',
-      trunfo: false,
+      cardName: '',
+      cardDescription: '',
+      cardAttr1: 0,
+      cardAttr2: 0,
+      cardAttr3: 0,
+      cardImage: '',
+      cardRare: 'normal',
+      cardTrunfo: false,
       hasTrunfo: false,
       isSaveButtonDisabled: true,
-      savedCards: [],
-      filteredCards: [],
-      op: false,
+      packCards: [],
+      isFilterOn: false,
+      nameFilter: '',
+      rareFilter: 'todas',
+      tF: false,
+      isTrunfoFilterOn: false,
     };
     this.onInputChange = this.onInputChange.bind(this);
+    this.canSave = this.canSave.bind(this);
+    this.clearInput = this.clearInput.bind(this);
     this.onSaveButtonClick = this.onSaveButtonClick.bind(this);
-    this.removeCard = this.removeCard.bind(this);
-    this.displayFilteredCards = this.displayFilteredCards.bind(this);
-    this.displaySavedCards = this.displaySavedCards.bind(this);
-    this.filterCards = this.filterCards.bind(this);
-  }
-
-  onSaveButtonClick(evt) {
-    evt.preventDefault();
-    const {
-      name,
-      description,
-      image,
-      rare,
-      attr1,
-      attr2,
-      attr3,
-      trunfo,
-      hasTrunfo,
-      savedCards,
-      cardSaved,
-    } = this.state;
-    const newCard = {
-      name,
-      description,
-      image,
-      rare,
-      attr1,
-      attr2,
-      attr3,
-      trunfo,
-      hasTrunfo,
-      cardSaved,
-    };
-    if (trunfo === true) {
-      this.setState({ hasTrunfo: true });
-    }
-    this.setState(({
-      savedCards: [...savedCards, newCard],
-      name: '',
-      description: '',
-      attr1: 0,
-      attr2: 0,
-      attr3: 0,
-      image: '',
-      rare: 'normal',
-      trunfo: false,
-      isSaveButtonDisabled: true,
-      op: true,
-    }));
+    this.onFilter = this.onFilter.bind(this);
+    this.onRemoveCard = this.onRemoveCard.bind(this);
+    this.displayCards = this.displayCards.bind(this);
   }
 
   onInputChange(evt) {
+    let { value } = evt.target;
+    if (evt.target.id === 'cardTrunfo') value = evt.target.checked;
+    if (evt.target.id.includes('cardAttr')) value = Number(evt.target.value);
+    this.setState({
+      [evt.target.id]: value,
+    }, () => {
+      this.canSave();
+    });
+  }
+
+  // Clicou em salvar
+  // Checar se a carta salva é trunfo
+  // Se sim, hasTrunfo: true
+
+  // Clicou em remover
+  // Checar se a carta a ser removida é trunfo
+  // Se sim, hasTrunfo: false
+
+  onSaveButtonClick(evt) {
+    evt.preventDefault();
+    const { state } = this;
+    const { packCards } = this.state;
+    const info = ['cardName', 'cardDescription', 'cardAttr1', 'cardAttr2', 'cardAttr3',
+      'cardImage', 'cardRare', 'cardTrunfo'];
+    const newCard = {};
+    info.forEach((field) => {
+      newCard[field] = state[field];
+    });
+    newCard.key = (Math.random());
+    this.setState({
+      packCards: [...packCards, newCard],
+      isSaveButtonDisabled: true,
+    }, () => {
+      if (state.cardTrunfo === true) {
+        this.setState({ hasTrunfo: true, cardTrunfo: false });
+      }
+    });
+    this.clearInput();
+  }
+
+  // Caso aja algum input no filtro, modo filtro on
+  // Caso modo filtro on, display cards filtradas
+  // Caso off, display cards salvas
+
+  onFilter(evt) {
     let val = evt.target.value;
-    if (
-      evt.target.id === 'attr1'
-      || evt.target.id === 'attr2'
-      || evt.target.id === 'attr3'
-    ) {
-      val = Number(val);
-    }
-    if (evt.target.id === 'trunfo') {
-      if (val === 'false') {
-        val = true;
-      }
-      if (val === 'true') {
-        val = false;
-      }
+    if (evt.target.id === 'tF') {
+      val = evt.target.checked;
+      if (val === true) {
+        this.setState({ isTrunfoFilterOn: true });
+      } else this.setState({ isTrunfoFilterOn: false });
     }
     this.setState({
       [evt.target.id]: val,
-    }, this.checkVals);
-  }
-
-  removeCard(evt) {
-    evt.preventDefault();
-    const { savedCards } = this.state;
-    const index = savedCards.indexOf(savedCards[evt.target.name]);
-    if (savedCards[index].trunfo === true) {
-      this.setState({ hasTrunfo: false });
-    }
-    this.setState({
-      savedCards: savedCards.filter((_, i) => i !== index),
+      isFilterOn: true,
     });
   }
 
-  filterCards(evt) {
-    if (evt.target.value !== '') {
-      this.setState({ op: false });
-      const { savedCards } = this.state;
-      this.setState({
-        filteredCards: savedCards.filter((card) => card.name.includes(evt.target.value)),
-      });
-    } else {
-      this.setState({ op: true });
-    }
-  }
-
-  checkAttr(attr1, attr2, attr3) {
-    const limit = 90;
-    const endLimit = 210;
-    if (
-      (attr1 >= 0 && attr1 <= limit)
-      && (attr2 >= 0 && attr2 <= limit)
-      && (attr3 >= 0 && attr3 <= limit)
-      && ((attr1 + attr2 + attr3) <= endLimit)
-    ) {
-      this.setState({ isSaveButtonDisabled: false });
-    } else {
-      this.setState({ isSaveButtonDisabled: true });
-    }
-  }
-
-  checkVals() {
-    const {
-      name,
-      description,
-      image,
-      rare,
-      attr1,
-      attr2,
-      attr3,
-    } = this.state;
-    if (
-      name !== ''
-      && description !== ''
-      && image !== ''
-      && rare !== ''
-    ) {
-      this.checkAttr(attr1, attr2, attr3);
-    } else {
-      this.setState({ isSaveButtonDisabled: true });
-    }
-  }
-
-  displaySavedCards(renderCards, savedCards, removeCard) {
-    savedCards.forEach((card, index) => {
-      renderCards.push(<Card
-        key={ index }
-        value={ index }
-        cardName={ card.name }
-        cardDescription={ card.description }
-        cardAttr1={ card.attr1 }
-        cardAttr2={ card.attr2 }
-        cardAttr3={ card.attr3 }
-        cardImage={ card.image }
-        cardRare={ card.rare }
-        cardTrunfo={ card.trunfo }
-        isCardSaved={ 1 }
-        removeCard={ removeCard }
-      />);
+  onRemoveCard(evt) {
+    const { state } = this;
+    const temp = state.packCards.filter((card) => {
+      if (card.key !== Number(evt.target.id)) {
+        return card;
+      }
+      if (card.cardTrunfo === true) {
+        this.setState({ hasTrunfo: false });
+      }
+      return false;
     });
-    return renderCards;
+    this.setState({ packCards: [...temp] });
+    console.log(temp);
   }
 
-  displayFilteredCards(renderCards, filterCards) {
-    filterCards.forEach((card, index) => {
-      renderCards.push(<Card
-        key={ index }
-        value={ index }
-        cardName={ card.name }
-        cardDescription={ card.description }
-        cardAttr1={ card.attr1 }
-        cardAttr2={ card.attr2 }
-        cardAttr3={ card.attr3 }
-        cardImage={ card.image }
-        cardRare={ card.rare }
-        cardTrunfo={ card.trunfo }
-        isCardSaved={ 1 }
-      />);
-    })
-    return renderCards;
+  displayCards(filter) {
+    const { state } = this;
+    let cdLi = [...(state.packCards)];
+    const display = [];
+    if (state.tF) {
+      cdLi = cdLi.filter((card) => card.cardTrunfo === (state.tF));
+      return this.renderCard(cdLi, display);
+    }
+    if (filter) {
+      if (state.nameFilter !== '') {
+        cdLi = cdLi.filter((card) => card.cardName.includes(state.nameFilter));
+      }
+      if (state.rareFilter !== 'todas') {
+        cdLi = cdLi.filter((card) => card.cardRare === (state.rareFilter));
+      }
+      return this.renderCard(cdLi, display);
+    }
+    // packCards
+    return this.renderCard(cdLi, display);
+    // returnCardlist
+  }
+
+  clearInput() {
+    const textInputs = ['cardName', 'cardDescription',
+      'cardImage'];
+    const numberInputs = ['cardAttr1', 'cardAttr2', 'cardAttr3'];
+
+    textInputs.forEach((field) => this.setState({ [field]: '' }));
+    numberInputs.forEach((field) => this.setState({ [field]: 0 }));
+    this.setState({ cardRare: 'normal' });
+  }
+
+  canSave() {
+    const textToBeChecked = ['cardName', 'cardDescription', 'cardImage', 'cardRare'];
+    const numbersToBeChecked = ['cardAttr1', 'cardAttr2', 'cardAttr3'];
+    const textValues = [];
+    const numberValues = [];
+    const ninLimit = 90;
+    const twohLimit = 210;
+    const isLesserThanNinety = [];
+    const { state } = this;
+    textToBeChecked.forEach((field) => textValues.push(state[field]));
+    numbersToBeChecked.forEach((field) => {
+      numberValues.push(state[field]);
+      isLesserThanNinety.push(state[field] <= ninLimit);
+    });
+    const min = numberValues.reduce((a, b) => Math.min(a, b));
+    const sum = numberValues.reduce((a, b) => a + b, 0);
+    if (!(textValues.includes(''))
+        && (min >= 0)
+        && !isLesserThanNinety.includes(false)
+        && (sum <= twohLimit)
+    ) this.setState({ isSaveButtonDisabled: false });
+    else this.setState({ isSaveButtonDisabled: true });
+  }
+
+  renderCard(cdLi, display) {
+    cdLi.forEach((card) => {
+      display.push(
+        <Card
+          key={ card.key }
+          removeId={ card.key }
+          cardName={ card.cardName }
+          cardDescription={ card.cardDescription }
+          cardAttr1={ card.cardAttr1 }
+          cardAttr2={ card.cardAttr2 }
+          cardAttr3={ card.cardAttr3 }
+          cardImage={ card.cardImage }
+          cardRare={ card.cardRare }
+          cardTrunfo={ card.cardTrunfo }
+          haveRemove
+          onRemoveCard={ this.onRemoveCard }
+        />,
+      );
+    });
+    return display;
   }
 
   render() {
-    const {
-      name,
-      description,
-      attr1,
-      attr2,
-      attr3,
-      image,
-      rare,
-      trunfo,
-      hasTrunfo,
-      isSaveButtonDisabled,
-      savedCards,
-      op,
-      filteredCards,
-    } = this.state;
+    const { cardName, cardDescription, cardAttr1, cardAttr2,
+      cardAttr3, cardImage, cardRare, cardTrunfo, hasTrunfo, isSaveButtonDisabled,
+      isFilterOn, isTrunfoFilterOn } = this.state;
     return (
       <div>
         <h1>Tryunfo</h1>
         <Form
-          cardName={ name }
-          cardDescription={ description }
-          cardAttr1={ attr1 }
-          cardAttr2={ attr2 }
-          cardAttr3={ attr3 }
-          cardImage={ image }
-          cardRare={ rare }
-          cardTrunfo={ trunfo }
+          cardName={ cardName }
+          cardDescription={ cardDescription }
+          cardAttr1={ cardAttr1 }
+          cardAttr2={ cardAttr2 }
+          cardAttr3={ cardAttr3 }
+          cardImage={ cardImage }
+          cardRare={ cardRare }
+          cardTrunfo={ cardTrunfo }
           hasTrunfo={ hasTrunfo }
           isSaveButtonDisabled={ isSaveButtonDisabled }
           onInputChange={ this.onInputChange }
           onSaveButtonClick={ this.onSaveButtonClick }
         />
         <Card
-          value={ -200 }
-          cardName={ name }
-          cardDescription={ description }
-          cardAttr1={ attr1 }
-          cardAttr2={ attr2 }
-          cardAttr3={ attr3 }
-          cardImage={ image }
-          cardRare={ rare }
-          cardTrunfo={ trunfo }
-          isCardSaved={ 0 }
-          removeCard={ null }
+          cardName={ cardName }
+          cardDescription={ cardDescription }
+          cardAttr1={ cardAttr1 }
+          cardAttr2={ cardAttr2 }
+          cardAttr3={ cardAttr3 }
+          cardImage={ cardImage }
+          cardRare={ cardRare }
+          cardTrunfo={ cardTrunfo }
+          haveRemove={ false }
+          onRemoveCard={ null }
         />
-        <input
-          data-testid="name-filter"
-          type="text"
-          name="inputFilter"
-          id="inputFilter"
-          onChange={ this.filterCards }
-        />
-        { op ? this.displaySavedCards([], savedCards, this.removeCard)
-          : this.displayFilteredCards([], filteredCards)}
+        <label htmlFor="nameFilter">
+          <input
+            data-testid="name-filter"
+            type="text"
+            id="nameFilter"
+            onChange={ this.onFilter }
+            disabled={ isTrunfoFilterOn }
+          />
+        </label>
+
+        <label htmlFor="rareFilter">
+          <select
+            data-testid="rare-filter"
+            id="rareFilter"
+            onChange={ this.onFilter }
+            disabled={ isTrunfoFilterOn }
+          >
+            <option value="todas" defaultValue="todas">Todas</option>
+            <option value="normal">Normal</option>
+            <option value="raro">Raro</option>
+            <option value="muito raro">Muito Raro</option>
+          </select>
+        </label>
+        <label htmlFor="tF">
+          <input data-testid="trunfo-filter" id="tF" type="checkbox" onClick={ this.onFilter } />
+          Super Trybe Trunfo
+        </label>
+        { isFilterOn ? this.displayCards(isFilterOn) : this.displayCards(isFilterOn)}
       </div>
     );
   }
 }
-
 export default App;

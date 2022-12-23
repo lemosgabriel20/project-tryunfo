@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 class Card extends React.Component {
   render() {
     const {
-      value,
       cardName,
       cardDescription,
       cardAttr1,
@@ -13,8 +12,9 @@ class Card extends React.Component {
       cardRare,
       cardImage,
       cardTrunfo,
-      isCardSaved,
-      removeCard,
+      haveRemove,
+      removeId,
+      onRemoveCard,
     } = this.props;
 
     return (
@@ -27,14 +27,14 @@ class Card extends React.Component {
         <p data-testid="attr3-card">{ cardAttr3 }</p>
         <p data-testid="rare-card">{ cardRare }</p>
         { cardTrunfo ? <p data-testid="trunfo-card">Super Trunfo</p> : null }
-        { isCardSaved ? <input
+        { haveRemove ? <input
+          type="button"
           data-testid="delete-button"
-          type="submit"
-          id="removeBtn"
-          name={ value }
+          id={ removeId }
+          onClick={ onRemoveCard }
           value="Excluir"
-          onClick={ removeCard }
-        /> : null }
+        />
+          : null }
       </div>
     );
   }
@@ -45,13 +45,13 @@ Card.propTypes = {
   cardDescription: PropTypes.string.isRequired,
   cardAttr1: PropTypes.number.isRequired,
   cardAttr2: PropTypes.number.isRequired,
+  removeId: PropTypes.number.isRequired,
   cardAttr3: PropTypes.number.isRequired,
   cardImage: PropTypes.string.isRequired,
   cardRare: PropTypes.string.isRequired,
   cardTrunfo: PropTypes.bool.isRequired,
-  isCardSaved: PropTypes.number.isRequired,
-  removeCard: PropTypes.func.isRequired,
-  value: PropTypes.number.isRequired,
+  haveRemove: PropTypes.bool.isRequired,
+  onRemoveCard: PropTypes.func.isRequired,
 };
 
 export default Card;

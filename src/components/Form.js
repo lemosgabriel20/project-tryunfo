@@ -20,83 +20,83 @@ class Form extends React.Component {
     return (
       <div>
         <form className="form">
-          <label htmlFor="name">
+          <label htmlFor="cardName">
             Nome
             <input
               data-testid="name-input"
               type="text"
-              id="name"
-              name="name"
+              id="cardName"
+              name="cardName"
               value={ cardName }
               onChange={ onInputChange }
             />
           </label>
 
-          <label htmlFor="description">
+          <label htmlFor="cardDescription">
             Descrição
             <textarea
               data-testid="description-input"
-              id="description"
-              name="description"
+              id="cardDescription"
+              name="cardDescription"
               value={ cardDescription }
               onChange={ onInputChange }
             />
           </label>
 
-          <label htmlFor="attr1">
+          <label htmlFor="cardAttr1">
             Attr01
             <input
               data-testid="attr1-input"
               type="number"
-              id="attr1"
-              name="attr1"
+              id="cardAttr1"
+              name="cardAttr1"
               value={ cardAttr1 }
               onChange={ onInputChange }
             />
           </label>
 
-          <label htmlFor="attr2">
+          <label htmlFor="cardAttr2">
             Attr02
             <input
               data-testid="attr2-input"
               type="number"
-              id="attr2"
-              name="attr2"
+              id="cardAttr2"
+              name="cardAttr2"
               value={ cardAttr2 }
               onChange={ onInputChange }
             />
           </label>
 
-          <label htmlFor="attr3">
+          <label htmlFor="cardAttr3">
             Attr03
             <input
               data-testid="attr3-input"
               type="number"
-              id="attr3"
-              name="attr3"
+              id="cardAttr3"
+              name="cardAttr3"
               value={ cardAttr3 }
               onChange={ onInputChange }
             />
           </label>
 
-          <label htmlFor="image">
+          <label htmlFor="cardImage">
             Imagem
             <input
               data-testid="image-input"
               type="text"
-              id="image"
-              name="image"
+              id="cardImage"
+              name="cardImage"
               value={ cardImage }
               onChange={ onInputChange }
             />
           </label>
 
-          <label htmlFor="rare">
+          <label htmlFor="cardRare">
             Raridade
             <select
               data-testid="rare-input"
-              name="rare"
-              id="rare"
+              name="cardRare"
+              id="cardRare"
               value={ cardRare }
               onChange={ onInputChange }
             >
@@ -106,17 +106,17 @@ class Form extends React.Component {
             </select>
           </label>
 
-          <label htmlFor="trunfo">
+          <label htmlFor="cardTrunfo">
             { hasTrunfo ? <p>Você já tem um Super Trunfo em seu baralho</p> : <input
               data-testid="trunfo-input"
               type="checkbox"
-              id="trunfo"
-              name="trunfo"
-              checked
-              value={ cardTrunfo }
-              onChange={ onInputChange }
+              id="cardTrunfo"
+              name="cardTrunfo"
+              checked={ cardTrunfo }
+              onClick={ onInputChange }
             /> }
-            Super Trybe Trunfo
+            { hasTrunfo ? null : <span>Super Trybe Trunfo</span>}
+            Super Trunfo
           </label>
 
           <label htmlFor="save">
