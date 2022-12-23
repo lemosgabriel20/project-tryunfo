@@ -111,16 +111,13 @@ class App extends React.Component {
       }
       return this.renderCard(cdLi, display);
     }
-    // packCards
     return this.renderCard(cdLi, display);
-    // returnCardlist
   }
 
   clearInput() {
     const textInputs = ['cardName', 'cardDescription',
       'cardImage'];
     const numberInputs = ['cardAttr1', 'cardAttr2', 'cardAttr3'];
-
     textInputs.forEach((field) => this.setState({ [field]: '' }));
     numberInputs.forEach((field) => this.setState({ [field]: 0 }));
     this.setState({ cardRare: 'normal' });
