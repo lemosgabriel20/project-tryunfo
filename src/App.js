@@ -20,7 +20,7 @@ class App extends React.Component {
       isFilterOn: false,
       nameFilter: '',
       rareFilter: 'todas',
-      tF: false,
+      trunfoFilter: false,
       isTrunfoFilterOn: false,
     };
     this.onInputChange = this.onInputChange.bind(this);
@@ -42,14 +42,6 @@ class App extends React.Component {
       this.canSave();
     });
   }
-
-  // Clicou em salvar
-  // Checar se a carta salva é trunfo
-  // Se sim, hasTrunfo: true
-
-  // Clicou em remover
-  // Checar se a carta a ser removida é trunfo
-  // Se sim, hasTrunfo: false
 
   onSaveButtonClick(evt) {
     evt.preventDefault();
@@ -73,13 +65,9 @@ class App extends React.Component {
     this.clearInput();
   }
 
-  // Caso aja algum input no filtro, modo filtro on
-  // Caso modo filtro on, display cards filtradas
-  // Caso off, display cards salvas
-
   onFilter(evt) {
     let val = evt.target.value;
-    if (evt.target.id === 'tF') {
+    if (evt.target.id === 'trunfoFilter') {
       val = evt.target.checked;
       if (val === true) {
         this.setState({ isTrunfoFilterOn: true });
@@ -110,8 +98,8 @@ class App extends React.Component {
     const { state } = this;
     let cdLi = [...(state.packCards)];
     const display = [];
-    if (state.tF) {
-      cdLi = cdLi.filter((card) => card.cardTrunfo === (state.tF));
+    if (state.trunfoFilter) {
+      cdLi = cdLi.filter((card) => card.cardTrunfo === (state.trunfoFilter));
       return this.renderCard(cdLi, display);
     }
     if (filter) {
@@ -240,8 +228,13 @@ class App extends React.Component {
             <option value="muito raro">Muito Raro</option>
           </select>
         </label>
-        <label htmlFor="tF">
-          <input data-testid="trunfo-filter" id="tF" type="checkbox" onClick={ this.onFilter } />
+        <label htmlFor="trunfoFilter">
+          <input
+            data-testid="trunfo-filter"
+            id="trunfoFilter"
+            type="checkbox"
+            onClick={ this.onFilter }
+          />
           Super Trybe Trunfo
         </label>
         { isFilterOn ? this.displayCards(isFilterOn) : this.displayCards(isFilterOn)}
